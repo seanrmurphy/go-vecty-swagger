@@ -1,0 +1,8 @@
+{
+  "CORSRules": [
+    {
+      "AllowedMethods": ["GET", "PUT", "POST", "DELETE"],
+      "AllowedOrigins": ["*"]
+    }
+  ]
+}
