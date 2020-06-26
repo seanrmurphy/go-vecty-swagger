@@ -1,17 +1,15 @@
 package model
 
-import (
-	"time"
-
-	"github.com/google/uuid"
-)
+import bemodels "github.com/seanrmurphy/go-vecty-swagger/models"
 
 // Item represents a single TODO item in the store.
 type Item struct {
-	ID           uuid.UUID
-	Title        string
-	Completed    bool
-	CreationDate time.Time
+	BackEndModel bemodels.Todo
+
+	//ID           uuid.UUID
+	//Title        string
+	//Completed    bool
+	//CreationDate time.Time
 }
 
 // FilterState represents a viewing filter for TODO items in the store.

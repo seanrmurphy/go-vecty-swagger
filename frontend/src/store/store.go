@@ -8,11 +8,13 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-openapi/strfmt"
 	"github.com/google/uuid"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/actions"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/dispatcher"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/store/model"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/store/storeutil"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/actions"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/dispatcher"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/store/model"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/store/storeutil"
+	swaggermodel "github.com/seanrmurphy/go-vecty-swagger/models"
 )
 
 var (
@@ -87,7 +89,7 @@ func CompletedItemCount() int {
 func count(completed bool) int {
 	count := 0
 	for _, item := range Items {
-		if item.Completed == completed {
+		if item.BackEndModel.Completed == completed {
 			count++
 		}
 	}
@@ -96,8 +98,8 @@ func count(completed bool) int {
 
 func addItem(i model.Item) {
 
-	i.CreationDate = time.Now()
-	i.ID = uuid.New()
+	i.BackEndModel.CreationDate = strfmt.DateTime(time.Now())
+	i.BackEndModel.ID = strfmt.UUID(uuid.New().String())
 	go postItemToBackend(i)
 	Items = append(Items, &i)
 }
@@ -114,29 +116,35 @@ func onAction(action interface{}) {
 		Items = a.Items
 
 	case *actions.AddItem:
-		addItem(model.Item{Title: a.Title, Completed: false})
+		m := model.Item{
+			BackEndModel: swaggermodel.Todo{
+				Title:     &a.Title,
+				Completed: false,
+			},
+		}
+		addItem(m)
 		//Items = append(Items, &model.Item{Title: a.Title, Completed: false})
 
 	case *actions.DestroyItem:
 		destroyItem(a.Index)
 
 	case *actions.SetTitle:
-		Items[a.Index].Title = a.Title
+		Items[a.Index].BackEndModel.Title = &a.Title
 		go updateItem(Items[a.Index])
 
 	case *actions.SetCompleted:
-		Items[a.Index].Completed = a.Completed
+		Items[a.Index].BackEndModel.Completed = a.Completed
 		go updateItem(Items[a.Index])
 
 	case *actions.SetAllCompleted:
 		for _, item := range Items {
-			item.Completed = a.Completed
+			item.BackEndModel.Completed = a.Completed
 		}
 
 	case *actions.ClearCompleted:
 		var activeItems []*model.Item
 		for _, item := range Items {
-			if !item.Completed {
+			if !item.BackEndModel.Completed {
 				activeItems = append(activeItems, item)
 			}
 		}
