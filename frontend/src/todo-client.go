@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"github.com/gopherjs/vecty"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/components"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/store"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/components"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/store"
 )
 
 var (
