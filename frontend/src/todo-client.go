@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	RestEndpoint = "https://3t9ljow8x2.execute-api.eu-west-1.amazonaws.com/prod/"
+	RestEndpoint = "https://glm3dpf2yi.execute-api.eu-west-1.amazonaws.com/prod"
 )
 
 func main() {
