@@ -2,7 +2,9 @@ package store
 
 import (
 	"context"
+	"log"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/go-openapi/strfmt"
@@ -18,20 +20,26 @@ type BrowserCompatibleRoundTripper struct {
 }
 
 func (rt BrowserCompatibleRoundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
+	log.Printf("In round tripper...\n")
 	r.Header.Add("js.fetch:mode", "cors")
 	resp, err := http.DefaultClient.Do(r)
 	return resp, err
 }
 
-func updateItem(i *model.Item) {
-
+func createClient() *client.SimpleTodo {
 	rt := BrowserCompatibleRoundTripper{}
+	url, _ := url.Parse(restEndpoint)
 	conf := client.Config{
+		URL:       url,
 		Transport: rt,
 	}
-
 	c := client.New(conf)
-	//c.transport =
+	return c
+}
+
+func updateItem(i *model.Item) {
+	c := createClient()
+
 	t := swaggermodel.Todo{
 		Completed: i.BackEndModel.Completed,
 		ID:        i.BackEndModel.ID,
@@ -42,32 +50,15 @@ func updateItem(i *model.Item) {
 	params.Todo = &t
 	params.Todoid = i.BackEndModel.ID.String()
 	ctx := context.TODO()
+
+	// should check return value here...
 	_, _ = c.Developers.UpdateTodo(ctx, params)
 
-	//endpoint := restEndpoint + "todo/" + i.ID.String()
-	//toPut, _ := json.Marshal(i)
-	//req, err := http.NewRequest("PUT", endpoint, bytes.NewBuffer(toPut))
-	//if err != nil {
-	//fmt.Println(err)
-	//return
-	//}
-	//req.Header.Add("js.fetch:mode", "cors")
-	//resp, err := http.DefaultClient.Do(req)
-	//if err != nil {
-	//fmt.Println(err)
-	//log.Printf("Error PUTting item to backend\n")
-	//return
-	//}
-
-	//defer resp.Body.Close()
 }
 
 func postItemToBackend(i model.Item) {
-	rt := BrowserCompatibleRoundTripper{}
-	conf := client.Config{
-		Transport: rt,
-	}
-	c := client.New(conf)
+	c := createClient()
+
 	t := swaggermodel.Todo{
 		Completed:    i.BackEndModel.Completed,
 		ID:           i.BackEndModel.ID,
@@ -77,63 +68,21 @@ func postItemToBackend(i model.Item) {
 	params := developers.NewAddTodoParams()
 	params.Todo = &t
 	ctx := context.TODO()
+
+	// should perform check on responses here...
 	_, _ = c.Developers.AddTodo(ctx, params)
-
-	//endpoint := restEndpoint + "todo"
-	//toPost, _ := json.Marshal(i)
-	//req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(toPost))
-	//if err != nil {
-	//fmt.Println(err)
-	//return
-	//}
-	//req.Header.Add("js.fetch:mode", "cors")
-	//resp, err := http.DefaultClient.Do(req)
-	//if err != nil {
-	//fmt.Println(err)
-	//return
-	//}
-	//defer resp.Body.Close()
-	//// handle the response
-
-	//if err != nil {
-	//log.Printf("Error POSTing new item to backend\n")
-	//}
-
-	//body, err := ioutil.ReadAll(resp.Body)
-	//if err != nil {
-	//log.Printf("Error parsing response from backend...\n")
-	//}
-	//log.Printf("Response = %v\n", string(body))
 
 }
 
 func destroyItemOnBackend(i *model.Item) {
+	c := createClient()
 
-	rt := BrowserCompatibleRoundTripper{}
-	conf := client.Config{
-		Transport: rt,
-	}
-	c := client.New(conf)
-	//t := swaggermodel.Todo{}
 	params := developers.NewDeleteTodoParams()
 	params.Todoid = i.BackEndModel.ID.String()
 
 	ctx := context.TODO()
+
+	// should check the return value here...
 	_, _ = c.Developers.DeleteTodo(ctx, params)
 
-	//resp := c.Developers.AddTodo(params)
-	//endpoint := restEndpoint + "todo/" + i.ID.String()
-	//req, err := http.NewRequest("DELETE", endpoint, nil)
-	//if err != nil {
-	//fmt.Println(err)
-	//return
-	//}
-	//req.Header.Add("js.fetch:mode", "cors")
-	//resp, err := http.DefaultClient.Do(req)
-	//if err != nil {
-	//fmt.Println(err)
-	//log.Printf("Error POSTing new item to backend\n")
-	//return
-	//}
-	//defer resp.Body.Close()
 }

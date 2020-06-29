@@ -1,15 +1,14 @@
 package store
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"log"
-	"net/http"
+	"context"
+	"net/url"
 	"time"
 
 	"github.com/go-openapi/strfmt"
 	"github.com/google/uuid"
+	"github.com/seanrmurphy/go-vecty-swagger/client"
+	"github.com/seanrmurphy/go-vecty-swagger/client/developers"
 	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/actions"
 	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/dispatcher"
 	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/store/model"
@@ -34,42 +33,43 @@ func init() {
 	dispatcher.Register(onAction)
 }
 
-func parseResponse(resp []byte) {
+func Initialize(s string) {
 
-	_ = json.Unmarshal(resp, &Items)
+	//restEndpoint = e
+	//endpoint := restEndpoint + "todo"
+	restEndpoint = s
 
-}
-
-func Initialize(e string) {
-
-	restEndpoint = e
-	endpoint := restEndpoint + "todo"
-
-	req, err := http.NewRequest("GET", endpoint, nil)
-	req.Header.Add("js.fetch:mode", "cors")
-	if err != nil {
-		fmt.Println(err)
-		return
+	rt := BrowserCompatibleRoundTripper{}
+	url, _ := url.Parse(restEndpoint)
+	//transport := http.transport.New(host, basePath, schemes)
+	//transport.Transport = rt
+	conf := client.Config{
+		URL:       url,
+		Transport: rt,
 	}
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer resp.Body.Close()
-	// handle the response
+	c := client.New(conf)
 
-	if err != nil {
-		log.Printf("Error talking to rest endpoint\n")
+	p := developers.NewGetAllTodosParams()
+	ctx := context.TODO()
+	todos, _ := c.Developers.GetAllTodos(ctx, p)
+
+	for _, t := range todos.Payload {
+		i := model.Item{
+			BackEndModel: *t,
+		}
+		Items = append(Items, &i)
+		//log.Printf("todo = %v\n", t)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Printf("Error reading response...\n")
-	}
-	log.Printf("Response = %v\n", string(body))
+	//}
 
-	parseResponse(body)
+	//body, err := ioutil.ReadAll(resp.Body)
+	//if err != nil {
+	//log.Printf("Error reading response...\n")
+	//}
+	//log.Printf("Response = %v\n", string(body))
+
+	//parseResponse(body)
 
 	dispatcher.Dispatch(&actions.ReplaceItems{
 		Items: Items,
@@ -88,8 +88,8 @@ func CompletedItemCount() int {
 
 func count(completed bool) int {
 	count := 0
-	for _, item := range Items {
-		if item.BackEndModel.Completed == completed {
+	for _, i := range Items {
+		if i.BackEndModel.Completed == completed {
 			count++
 		}
 	}

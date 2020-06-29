@@ -1,6 +1,8 @@
 package actions
 
-import "github.com/seanrmurphy/go-vecty-swagger/frontend/src/store/model"
+import (
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/store/model"
+)
 
 // ReplaceItems is an action that replaces all items with the specified ones.
 type ReplaceItems struct {
