@@ -1,0 +1,1 @@
+/usr/local/go/misc/wasm/wasm_exec.js
