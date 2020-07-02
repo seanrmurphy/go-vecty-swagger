@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"log"
 	"net/url"
 	"time"
 
@@ -41,8 +42,6 @@ func Initialize(s string) {
 
 	rt := BrowserCompatibleRoundTripper{}
 	url, _ := url.Parse(restEndpoint)
-	//transport := http.transport.New(host, basePath, schemes)
-	//transport.Transport = rt
 	conf := client.Config{
 		URL:       url,
 		Transport: rt,
@@ -51,25 +50,19 @@ func Initialize(s string) {
 
 	p := developers.NewGetAllTodosParams()
 	ctx := context.TODO()
-	todos, _ := c.Developers.GetAllTodos(ctx, p)
+	todos, err := c.Developers.GetAllTodos(ctx, p)
+
+	if err != nil {
+		log.Printf("Error obtaining items from backend - error %v\n", err)
+		return
+	}
 
 	for _, t := range todos.Payload {
 		i := model.Item{
 			BackEndModel: *t,
 		}
 		Items = append(Items, &i)
-		//log.Printf("todo = %v\n", t)
 	}
-
-	//}
-
-	//body, err := ioutil.ReadAll(resp.Body)
-	//if err != nil {
-	//log.Printf("Error reading response...\n")
-	//}
-	//log.Printf("Response = %v\n", string(body))
-
-	//parseResponse(body)
 
 	dispatcher.Dispatch(&actions.ReplaceItems{
 		Items: Items,

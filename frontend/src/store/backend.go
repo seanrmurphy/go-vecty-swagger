@@ -16,7 +16,6 @@ import (
 )
 
 type BrowserCompatibleRoundTripper struct {
-	i int
 }
 
 func (rt BrowserCompatibleRoundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
@@ -41,19 +40,20 @@ func updateItem(i *model.Item) {
 	c := createClient()
 
 	t := swaggermodel.Todo{
-		Completed: i.BackEndModel.Completed,
-		ID:        i.BackEndModel.ID,
-		Title:     i.BackEndModel.Title,
-		//CreationDate: time.Now(),
+		Completed:    i.BackEndModel.Completed,
+		ID:           i.BackEndModel.ID,
+		Title:        i.BackEndModel.Title,
+		CreationDate: strfmt.DateTime(time.Now()),
 	}
 	params := developers.NewUpdateTodoParams()
 	params.Todo = &t
 	params.Todoid = i.BackEndModel.ID.String()
 	ctx := context.TODO()
 
-	// should check return value here...
-	_, _ = c.Developers.UpdateTodo(ctx, params)
-
+	if _, err := c.Developers.UpdateTodo(ctx, params); err != nil {
+		log.Printf("Error updating item on backend - error %v\n", err)
+		return
+	}
 }
 
 func postItemToBackend(i model.Item) {
@@ -69,9 +69,10 @@ func postItemToBackend(i model.Item) {
 	params.Todo = &t
 	ctx := context.TODO()
 
-	// should perform check on responses here...
-	_, _ = c.Developers.AddTodo(ctx, params)
-
+	if _, err := c.Developers.AddTodo(ctx, params); err != nil {
+		log.Printf("Error pusting new item on backend - error %v\n", err)
+		return
+	}
 }
 
 func destroyItemOnBackend(i *model.Item) {
@@ -82,7 +83,8 @@ func destroyItemOnBackend(i *model.Item) {
 
 	ctx := context.TODO()
 
-	// should check the return value here...
-	_, _ = c.Developers.DeleteTodo(ctx, params)
-
+	if _, err := c.Developers.DeleteTodo(ctx, params); err != nil {
+		log.Printf("Error deleting item on backend - error %v\n", err)
+		return
+	}
 }
