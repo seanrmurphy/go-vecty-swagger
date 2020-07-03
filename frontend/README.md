@@ -1,7 +1,7 @@
-# The go-fullstack Frontend
+# The go-vecty-swagger Frontend
 
 The frontend provided here is the TodoMVC example provided by the vecty project
-with some very modest modifications to communicate with the backend.
+with some modest modifications to communicate with the backend using Swagger.
 
 The frontend can be run directly on your local machine or it can be run from an
 S3 bucket with CORS enabled. Basic instructions for each of these options are
@@ -25,7 +25,7 @@ The application can be built using the go compiler as follows
 
 The backend is specified as a variable (`RestEndpoint`) in the main entry point
 for the application - in the `todo-client.go` file. Modify this based on the
-configuration of the backend (see the backend `README.md` for more details).
+configuration of the backend.
 
 ## wasm_exec.js
 
