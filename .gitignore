@@ -1,2 +1,3 @@
 build/out.wasm
 wasm_exec.js
+frontend/build/out.wasm
