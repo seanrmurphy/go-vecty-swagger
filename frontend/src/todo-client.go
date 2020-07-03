@@ -4,12 +4,12 @@ import (
 	"log"
 
 	"github.com/gopherjs/vecty"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/components"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/store"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/components"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/store"
 )
 
 var (
-	RestEndpoint = "https://3t9ljow8x2.execute-api.eu-west-1.amazonaws.com/prod/"
+	RestEndpoint = "https://glm3dpf2yix.execute-api.eu-west-1.amazonaws.com/prod"
 )
 
 func main() {

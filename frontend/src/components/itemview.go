@@ -6,9 +6,9 @@ import (
 	"github.com/gopherjs/vecty/event"
 	"github.com/gopherjs/vecty/prop"
 	"github.com/gopherjs/vecty/style"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/actions"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/dispatcher"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/store/model"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/actions"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/dispatcher"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/store/model"
 )
 
 // ItemView is a vecty.Component which represents a single item in the TODO
@@ -43,7 +43,7 @@ func (p *ItemView) onToggleCompleted(event *vecty.Event) {
 
 func (p *ItemView) onStartEdit(event *vecty.Event) {
 	p.editing = true
-	p.editTitle = p.Item.Title
+	p.editTitle = *p.Item.BackEndModel.Title
 	vecty.Rerender(p)
 	p.input.Node().Call("focus")
 }
@@ -75,7 +75,7 @@ func (p *ItemView) Render() vecty.ComponentOrHTML {
 	return elem.ListItem(
 		vecty.Markup(
 			vecty.ClassMap{
-				"completed": p.Item.Completed,
+				"completed": p.Item.BackEndModel.Completed,
 				"editing":   p.editing,
 			},
 		),
@@ -89,7 +89,7 @@ func (p *ItemView) Render() vecty.ComponentOrHTML {
 				vecty.Markup(
 					vecty.Class("toggle"),
 					prop.Type(prop.TypeCheckbox),
-					prop.Checked(p.Item.Completed),
+					prop.Checked(p.Item.BackEndModel.Completed),
 					event.Change(p.onToggleCompleted),
 				),
 			),
@@ -97,7 +97,7 @@ func (p *ItemView) Render() vecty.ComponentOrHTML {
 				vecty.Markup(
 					event.DoubleClick(p.onStartEdit),
 				),
-				vecty.Text(p.Item.Title),
+				vecty.Text(*p.Item.BackEndModel.Title),
 			),
 			elem.Button(
 				vecty.Markup(

@@ -5,10 +5,10 @@ import (
 	"github.com/gopherjs/vecty/elem"
 	"github.com/gopherjs/vecty/event"
 	"github.com/gopherjs/vecty/prop"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/actions"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/dispatcher"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/store"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/store/model"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/actions"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/dispatcher"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/store"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/store/model"
 )
 
 // FilterButton is a vecty.Component which allows the user to select a filter

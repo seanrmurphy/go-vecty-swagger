@@ -8,10 +8,10 @@ import (
 	"github.com/gopherjs/vecty/event"
 	"github.com/gopherjs/vecty/prop"
 	"github.com/gopherjs/vecty/style"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/actions"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/dispatcher"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/store"
-	"github.com/seanrmurphy/go-fullstack/frontend/src/store/model"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/actions"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/dispatcher"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/store"
+	"github.com/seanrmurphy/go-vecty-swagger/frontend/src/store/model"
 )
 
 // PageView is a vecty.Component which represents the entire page.
@@ -171,7 +171,7 @@ func (p *PageView) renderInfo() *vecty.HTML {
 func (p *PageView) renderItemList() *vecty.HTML {
 	var items vecty.List
 	for i, item := range store.Items {
-		if (store.Filter == model.Active && item.Completed) || (store.Filter == model.Completed && !item.Completed) {
+		if (store.Filter == model.Active && item.BackEndModel.Completed) || (store.Filter == model.Completed && !item.BackEndModel.Completed) {
 			continue
 		}
 		items = append(items, &ItemView{Index: i, Item: item})
